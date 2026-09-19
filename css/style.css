@@ -1,0 +1,549 @@
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Light theme (default) ── */
+:root {
+  --color-primary:    #3b82f6;
+  --color-primary-dk: #2563eb;
+  --color-danger:     #ef4444;
+  --color-danger-dk:  #dc2626;
+  --color-bg:         #f1f5f9;
+  --color-surface:    #ffffff;
+  --color-border:     #e2e8f0;
+  --color-text:       #1e293b;
+  --color-muted:      #64748b;
+  --color-balance:    #2563eb;
+  --color-header-bg:  #3b82f6;
+  --color-header-txt: #ffffff;
+  --color-input-bg:   #ffffff;
+  --color-summary-bg: #eff6ff;
+  --color-summary-bd: #bfdbfe;
+
+  /* Category colours */
+  --color-food:       #22c55e;
+  --color-transport:  #3b82f6;
+  --color-fun:        #f97316;
+
+  --radius: 12px;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --transition: 0.2s ease;
+}
+
+/* ── Dark theme ── */
+[data-theme="dark"] {
+  --color-bg:         #0f172a;
+  --color-surface:    #1e293b;
+  --color-border:     #334155;
+  --color-text:       #f1f5f9;
+  --color-muted:      #94a3b8;
+  --color-balance:    #93c5fd;
+  --color-header-bg:  #1e40af;
+  --color-header-txt: #f1f5f9;
+  --color-input-bg:   #0f172a;
+  --color-summary-bg: #1e3a5f;
+  --color-summary-bd: #1d4ed8;
+
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* Smooth theme transition on everything except Chart canvas */
+body, .card, .app-header, input, select, button {
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+/* Accessibility: visually hidden label */
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+
+html { font-size: 16px; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+               Ubuntu, Cantarell, sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  min-height: 100vh;
+  line-height: 1.5;
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.app-header {
+  background-color: var(--color-header-bg);
+  color: var(--color-header-txt);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 1rem 3.5rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.app-header h1 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--color-header-txt);
+}
+
+/* Dark/light toggle button */
+.btn-theme-toggle {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.15);
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  border-radius: 8px;
+  padding: 0.3rem 0.55rem;
+  cursor: pointer;
+  font-size: 1.15rem;
+  line-height: 1;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.btn-theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.btn-theme-toggle:active {
+  transform: translateY(-50%) scale(0.92);
+}
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.25rem 1rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.card {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.25rem;
+}
+
+.card h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--color-text);
+}
+
+/* Bottom grid: stacked mobile → side-by-side ≥640px */
+.bottom-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .bottom-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ============================================================
+   BALANCE CARD
+   ============================================================ */
+.balance-card {
+  text-align: center;
+  padding: 1.5rem 1.25rem;
+}
+
+.balance-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+}
+
+.balance-amount {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--color-balance);
+  line-height: 1.1;
+}
+
+/* ============================================================
+   MONTHLY SUMMARY CARD
+   ============================================================ */
+.summary-card {
+  background: var(--color-summary-bg);
+  border: 1.5px solid var(--color-summary-bd);
+}
+
+.summary-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.summary-header h2 {
+  margin-bottom: 0;
+}
+
+.month-filter-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+input[type="month"] {
+  padding: 0.45rem 0.65rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 0.88rem;
+  color: var(--color-text);
+  background: var(--color-input-bg);
+  cursor: pointer;
+}
+
+input[type="month"]:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.btn-clear-filter {
+  padding: 0.45rem 0.75rem;
+  background: var(--color-surface);
+  color: var(--color-muted);
+  border: 1.5px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition);
+}
+
+.btn-clear-filter:hover {
+  background: var(--color-border);
+  color: var(--color-text);
+}
+
+.summary-total {
+  font-size: 0.92rem;
+  color: var(--color-text);
+  margin-top: 0.4rem;
+}
+
+.summary-total strong {
+  color: var(--color-primary);
+  font-size: 1.05rem;
+}
+
+/* Badge shown on list heading when filter is active */
+.filter-badge {
+  display: inline-block;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 0.1rem 0.55rem;
+  border-radius: 999px;
+  vertical-align: middle;
+  margin-left: 0.4rem;
+}
+
+/* ============================================================
+   FORM
+   ============================================================ */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin-bottom: 0.9rem;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-muted);
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: var(--color-text);
+  background: var(--color-input-bg);
+  transition: border-color var(--transition), box-shadow var(--transition);
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.form-group select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-color: var(--color-input-bg);
+  padding-right: 2rem;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.form-group input.is-invalid,
+.form-group select.is-invalid {
+  border-color: var(--color-danger);
+}
+
+.error-msg {
+  font-size: 0.78rem;
+  color: var(--color-danger);
+  display: none;
+}
+
+.error-msg.visible {
+  display: block;
+}
+
+/* New category inline row */
+.new-category-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.new-category-row input {
+  flex: 1;
+}
+
+.btn-save-category {
+  flex-shrink: 0;
+  padding: 0.6rem 1rem;
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+
+.btn-save-category:hover {
+  background: var(--color-primary-dk);
+}
+
+/* Submit button */
+.btn-primary {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: var(--color-primary);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 0.25rem;
+  transition: background-color var(--transition), transform var(--transition);
+}
+
+.btn-primary:hover  { background-color: var(--color-primary-dk); }
+.btn-primary:active { transform: scale(0.98); }
+
+/* ============================================================
+   TRANSACTION LIST
+   ============================================================ */
+.list-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.transaction-list {
+  max-height: 340px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+
+.transaction-list::-webkit-scrollbar { width: 5px; }
+.transaction-list::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 4px;
+}
+
+.transaction-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.65rem 0.75rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: 8px;
+  gap: 0.5rem;
+  animation: fadeIn 0.2s ease;
+  background: var(--color-surface);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.transaction-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.transaction-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--color-text);
+}
+
+.transaction-amount {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.transaction-category {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--color-border);
+  color: var(--color-muted);
+  width: fit-content;
+}
+
+/* Built-in category left-border accents */
+.transaction-item[data-category="Food"]      { border-left: 4px solid var(--color-food); }
+.transaction-item[data-category="Transport"] { border-left: 4px solid var(--color-transport); }
+.transaction-item[data-category="Fun"]       { border-left: 4px solid var(--color-fun); }
+
+/* Custom categories get a dynamic inline style from JS — no static rule needed */
+
+.btn-delete {
+  flex-shrink: 0;
+  padding: 0.35rem 0.65rem;
+  background-color: var(--color-danger);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--transition);
+}
+
+.btn-delete:hover { background-color: var(--color-danger-dk); }
+
+.empty-msg {
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  text-align: center;
+  padding: 1rem 0;
+}
+
+/* ============================================================
+   CHART
+   ============================================================ */
+.chart-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 260px;
+  margin: 0 auto;
+}
+
+.chart-empty-msg { margin-top: 0.5rem; }
+
+/* ============================================================
+   CUSTOM CATEGORY MANAGER
+   ============================================================ */
+.category-manager-card { padding: 1.25rem; }
+
+.custom-category-list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.custom-category-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--color-bg);
+  border: 1.5px solid var(--color-border);
+  border-radius: 999px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.btn-remove-category {
+  background: none;
+  border: none;
+  color: var(--color-muted);
+  cursor: pointer;
+  font-size: 0.95rem;
+  line-height: 1;
+  padding: 0;
+  transition: color var(--transition);
+}
+
+.btn-remove-category:hover { color: var(--color-danger); }
+
+/* ============================================================
+   RESPONSIVE TWEAKS
+   ============================================================ */
+@media (max-width: 400px) {
+  .balance-amount     { font-size: 2rem; }
+  .app-header h1      { font-size: 1.05rem; }
+  .summary-header     { flex-direction: column; align-items: flex-start; }
+}

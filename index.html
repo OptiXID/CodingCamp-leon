@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Expense &amp; Budget Visualizer</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header class="app-header">
+    <h1>Expense &amp; Budget Visualizer</h1>
+    <!-- Dark / Light mode toggle -->
+    <button class="btn-theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+      <span class="theme-icon" id="themeIcon">🌙</span>
+    </button>
+  </header>
+
+  <main class="container">
+
+    <!-- ===== TOTAL BALANCE ===== -->
+    <section class="card balance-card">
+      <p class="balance-label">TOTAL BALANCE</p>
+      <p class="balance-amount" id="totalBalance">$0.00</p>
+    </section>
+
+    <!-- ===== MONTHLY SUMMARY ===== -->
+    <section class="card summary-card">
+      <div class="summary-header">
+        <h2>Monthly Summary</h2>
+        <div class="month-filter-group">
+          <label for="monthFilter" class="sr-only">Select Month</label>
+          <input type="month" id="monthFilter" />
+          <button class="btn-clear-filter" id="clearMonthFilter" title="Show all transactions">
+            Show All
+          </button>
+        </div>
+      </div>
+      <p class="summary-total" id="summaryTotal" style="display:none;">
+        Total for <span id="summaryMonthLabel"></span>:
+        <strong id="summaryAmount">$0.00</strong>
+      </p>
+    </section>
+
+    <!-- ===== ADD TRANSACTION FORM ===== -->
+    <section class="card form-card">
+      <h2>Add Transaction</h2>
+      <form id="transactionForm" novalidate>
+
+        <div class="form-group">
+          <label for="itemName">Item Name</label>
+          <input
+            type="text"
+            id="itemName"
+            placeholder="e.g. Coffee"
+            autocomplete="off"
+          />
+          <span class="error-msg" id="itemNameError">Please enter an item name.</span>
+        </div>
+
+        <div class="form-group">
+          <label for="amount">Amount</label>
+          <input
+            type="number"
+            id="amount"
+            placeholder="e.g. 14.94"
+            min="0.01"
+            step="0.01"
+          />
+          <span class="error-msg" id="amountError">Please enter a valid amount.</span>
+        </div>
+
+        <div class="form-group">
+          <label for="category">Category</label>
+          <select id="category">
+            <option value="">-- Select Category --</option>
+            <option value="Food">Food</option>
+            <option value="Transport">Transport</option>
+            <option value="Fun">Fun</option>
+            <!-- Custom categories injected here by JS -->
+            <option value="__add_new__">＋ Add New Category</option>
+          </select>
+          <span class="error-msg" id="categoryError">Please select a category.</span>
+        </div>
+
+        <!-- Custom category input — hidden until "+ Add New Category" is selected -->
+        <div class="form-group" id="newCategoryGroup" style="display:none;">
+          <label for="newCategoryInput">New Category Name</label>
+          <div class="new-category-row">
+            <input
+              type="text"
+              id="newCategoryInput"
+              placeholder="e.g. Health"
+              autocomplete="off"
+              maxlength="30"
+            />
+            <button type="button" class="btn-save-category" id="saveCategoryBtn">Save</button>
+          </div>
+          <span class="error-msg" id="newCategoryError">Please enter a category name.</span>
+        </div>
+
+        <button type="submit" class="btn-primary">Add Transaction</button>
+      </form>
+    </section>
+
+    <!-- ===== TRANSACTIONS + CHART (side-by-side on desktop) ===== -->
+    <div class="bottom-grid">
+
+      <!-- Transaction List -->
+      <section class="card list-card">
+        <h2>Transactions <span class="filter-badge" id="filterBadge" style="display:none;"></span></h2>
+        <div class="transaction-list" id="transactionList">
+          <p class="empty-msg" id="emptyMsg">No transactions yet.</p>
+        </div>
+      </section>
+
+      <!-- Pie Chart -->
+      <section class="card chart-card">
+        <h2>Spending by Category</h2>
+        <div class="chart-wrapper">
+          <canvas id="spendingChart"></canvas>
+        </div>
+        <p class="empty-msg chart-empty-msg" id="chartEmptyMsg">Add transactions to see chart.</p>
+      </section>
+
+    </div>
+
+    <!-- ===== CUSTOM CATEGORY MANAGER ===== -->
+    <section class="card category-manager-card" id="categoryManagerCard" style="display:none;">
+      <h2>Custom Categories</h2>
+      <ul class="custom-category-list" id="customCategoryList"></ul>
+    </section>
+
+  </main>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
